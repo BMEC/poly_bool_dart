@@ -52,6 +52,14 @@ class Intersecter {
   }
 
   EventNode eventDivide(EventNode ev, Coordinate pt) {
+    // Guard: skip division if pt coincides with either endpoint of the segment.
+    // Dividing at the start would make ev zero-length; dividing at the end
+    // would make the new segment (ns) zero-length. Both cause downstream errors.
+    if (epsilon.pointsSame(pt, ev.seg.start) ||
+        epsilon.pointsSame(pt, ev.seg.end)) {
+      return ev;
+    }
+
     final ns = segmentCopy(pt, ev.seg.end, ev.seg);
     eventUpdateEnd(ev, pt);
 
